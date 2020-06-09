@@ -1,5 +1,5 @@
 TODO:
-☐ recurso para consulta de debitos de um veiculo
+✔ recurso para consulta de debitos de um veiculo @done (6/9/2020, 4:19:31 PM)
 POST
 request:
 {
@@ -16,14 +16,16 @@ response:
 	]
 }
 
- ☐ Add camada de cache (REDIS)
-	# chave composta por todos os parametros (plate, renavam, uf)
-	# TTL configurável de 12h (process.env)
-	# não precisa persistir o cache 
+ ✔ Add camada de cache (REDIS) @done (6/9/2020, 4:19:44 PM)
+	 ✔ chave composta por todos os parametros (plate, renavam, uf) @done (6/9/2020, 4:19:38 PM)
+	 ✔ TTL configurável de 12h (process.env) @done (6/9/2020, 4:19:38 PM)
+	 ✔ não precisa persistir o cache @done (6/9/2020, 4:19:40 PM)
 
 
  ☐ Chamadas distintas por estado
-	# chamadas para o uf do RJ são diff de SP
+	 ☐ chamadas para o uf do RJ são diff de SP
+
+
 
  ☐ Chamadas ao serviço externo de forma assincrona
-	# Promise.all()
+	 ☐ Promise.all()
