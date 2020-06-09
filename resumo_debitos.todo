@@ -1,0 +1,29 @@
+TODO:
+☐ recurso para consulta de debitos de um veiculo
+POST
+request:
+{
+	"plate": "ABC1234",
+	"renavam": "87647836",
+	"uf": "RJ"
+}
+
+response:
+{
+	outras infos necessárias,
+	debits: [
+		// lista de debitos
+	]
+}
+
+ ☐ Add camada de cache (REDIS)
+	# chave composta por todos os parametros (plate, renavam, uf)
+	# TTL configurável de 12h (process.env)
+	# não precisa persistir o cache 
+
+
+ ☐ Chamadas distintas por estado
+	# chamadas para o uf do RJ são diff de SP
+
+ ☐ Chamadas ao serviço externo de forma assincrona
+	# Promise.all()
