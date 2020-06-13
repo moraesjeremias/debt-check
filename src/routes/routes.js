@@ -1,9 +1,8 @@
 const express = require('express');
 const routes = express.Router();
-const debtController = require('../controller/debtController')
 
-routes.get('/test', debtController.index);
-routes.post('/check-debts/', debtController.retrieveQueriedDebt)
-routes.post('/cached-debts/', debtController.chachedDebtsFromRedis)
+const DebtController = require('../controller/debtController')
+
+routes.post(`/debits/:state`, DebtController.getCarByRegion);
 
 module.exports = routes;

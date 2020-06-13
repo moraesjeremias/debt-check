@@ -1,48 +1,33 @@
-const fakeDebts = require('../service/getVehicleInfo')
+const repository = require('../repository/debitsRepository')
 const redis = require('redis');
 
-const debtsClient = redis.createClient();
+const redisClient = redis.createClient();
 
 
-module.exports ={
-    index(req, res) {
-        const placa = req.body.placa
-        console.log(placa)
-        res.json(placa);
-    },
+module.exports = {
 
-    retrieveQueriedDebt(req, res) {
-        const { placa, renavam, uf } = req.body
-        console.log(placa, renavam, uf)
-        try {
-            const queriedDebtResult = fakeDebts.validateVehicleInfo(placa, renavam, uf)
-            return res.json(queriedDebtResult)
-        } catch (error) {
-            console.log(error)
-            return res.json(error)
-        }
-    },
+    getCarByRegion(req, res) {
+        const {placa, renavam, auth_token, uf} = req.body
+        const key = `placa:${placa}:renavam:${renavam}:uf:${uf}`
+        redisClient.get(key, (err, reply) => {
+            if (reply) {
+                console.log("Request using redis")
 
-    chachedDebtsFromRedis(request, response) {
-        const { placa, renavam, auth_token, uf } = request.body;
-        debtsClient.get(`placa:${placa}:renavam:${renavam}:uf:${uf}`, (err, reply) => {
-            if(reply != null){
-                try {
-                    const jsonParsedRedisReply = JSON.parse(reply)
-                    console.log('\n Retorno da Consulta no Redis: \n', jsonParsedRedisReply)
-                    return response.json(jsonParsedRedisReply)
-                } catch (error) {
-                    console.log(err)
-                    return err
-                }
-            }else{
-                const databaseDebts = fakeDebts.validateVehicleInfo(placa,renavam, uf)
-                const stringParsedDbDebts = JSON.stringify(databaseDebts);
-                console.log('\n Retorno da Consulta no Mock: \n', databaseDebts);
-                debtsClient.setex(`placa:${placa}:renavam:${renavam}:uf:${uf}`, process.env.TTL || 5, stringParsedDbDebts)
-                return response.json(databaseDebts) 
-            }  
-        })
+                const debit = JSON.parse(reply)
+                res.status(200).send(debit)
+            } else {
+                repository.getDebits(auth_token, placa, renavam, uf).then(response => {
+                    console.log("Request using API")
+
+                    redisClient.set(key, JSON.stringify(response.data));
+                    redisClient.expire(key, process.env.TTL || 600);
+                    res.status(200).json(response.data)
+                }).catch(reason => {
+                    res.json(reason)
+                })
+            }
+        });
+
     },
 
 }
