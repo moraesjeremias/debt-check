@@ -21,7 +21,7 @@ async function getDebitsFromState(token, licensePlate, carRegistry, uf) {
 }
 
 
-async function getFederalAgenciesDebits(token, licensePlate, carRegistry, orgao) {
+async function getFederalAgenciesDebits(token, licensePlate, carRegistry, agency) {
     const debtFormData = querystring.stringify({
         auth_token: token,
         placa: licensePlate,
@@ -32,10 +32,27 @@ async function getFederalAgenciesDebits(token, licensePlate, carRegistry, orgao)
         'Content-Type': ['application/x-www-form-urlencoded', 'application/x-www-form-urlencoded'],
     };
 
-    return await debtApi.post('/orgaos/' + orgao, debtFormData, headers)
+    return await debtApi.post('/orgaos/' + agency, debtFormData, headers)
+}
+
+async function getDebitsAndFederalAgencies(token, licensePlate, carRegistry) {
+    const debtFormData = querystring.stringify({
+        auth_token: token,
+        placa: licensePlate,
+        renavam: carRegistry
+    });
+
+    const headers = {
+        'Content-Type': ['application/x-www-form-urlencoded', 'application/x-www-form-urlencoded'],
+    };
+    let agencies = [];
+    agencies.push(await debtApi.post('/orgaos/der', debtFormData, headers))
+    agencies.push(await debtApi.post('/orgaos/dnit', debtFormData, headers))
+    agencies.push(await debtApi.post('/orgaos/prf', debtFormData, headers))
+    return agencies
 }
 
 
-module.exports = {getDebitsFromState, getFederalAgenciesDebits}
+module.exports = {getDebitsFromState, getFederalAgenciesDebits, getDebitsAndFederalAgencies}
 
 
