@@ -33,7 +33,7 @@ module.exports = {
 
     getCheckFederalAgencies(req, res) {
         const {placa, renavam, auth_token, orgao} = req.body
-        const key = `placa:${placa}:renavam:${renavam}`
+        const key = `placa:${placa}:renavam:${renavam}:orgao:${orgao}`
         redisClient.get(key, (err, reply) => {
             if (reply) {
                 console.log("Request using redis")
