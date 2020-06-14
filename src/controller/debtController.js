@@ -30,4 +30,33 @@ module.exports = {
 
     },
 
+
+    getCheckFederalAgencies(req, res) {
+        const {placa, renavam, auth_token, orgao} = req.body
+        const key = `placa:${placa}:renavam:${renavam}`
+        redisClient.get(key, (err, reply) => {
+            if (reply) {
+                console.log("Request using redis")
+
+                const debit = JSON.parse(reply)
+                res.status(200).send(debit)
+            } else {
+                repository.getFederalAgencies(auth_token, placa, renavam, orgao).then(response => {
+                    console.log("Request using API")
+
+                    redisClient.set(key, JSON.stringify(response.data));
+                    redisClient.expire(key, process.env.TTL || 600);
+                    res.status(200).json(response.data)
+                }).catch(reason => {
+                    res.json(reason)
+                })
+            }
+        });
+
+    },
+
 }
+
+
+
+

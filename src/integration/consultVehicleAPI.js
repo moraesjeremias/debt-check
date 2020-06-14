@@ -20,6 +20,22 @@ async function getDebitsFromState(token, licensePlate, carRegistry, uf) {
     return await debtApi.post('/debitos/' + uf, debtFormData, headers)
 }
 
-module.exports = {getDebitsFromState}
+
+async function getFederalAgenciesDebits(token, licensePlate, carRegistry, orgao) {
+    const debtFormData = querystring.stringify({
+        auth_token: token,
+        placa: licensePlate,
+        renavam: carRegistry
+    });
+
+    const headers = {
+        'Content-Type': ['application/x-www-form-urlencoded', 'application/x-www-form-urlencoded'],
+    };
+
+    return await debtApi.post('/orgaos/' + orgao, debtFormData, headers)
+}
+
+
+module.exports = {getDebitsFromState, getFederalAgenciesDebits}
 
 

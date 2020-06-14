@@ -6,4 +6,8 @@ module.exports = new class DebitsRepository {
         return integrationService.getDebitsFromState(token, licensePlate, carRegistry, uf)
     }
 
+    getFederalAgencies(token, licensePlate, carRegistry, orgao) {
+        return integrationService.getFederalAgenciesDebits(token, licensePlate, carRegistry, orgao)
+    }
+
 }
